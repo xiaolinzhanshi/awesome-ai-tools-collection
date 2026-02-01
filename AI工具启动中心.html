@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI工具启动中心 - Awesome AI Tools Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .category {
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .category-title {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid #fff;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .tool-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tool-desc {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .tool-tech {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .tech-tag {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI工具启动中心</h1>
+            <p>Awesome AI Tools Collection - 星星 ⭐ & 铁血士 🛡️⚔️</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number">17</div>
+                    <div class="label">个工具</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">13K+</div>
+                    <div class="label">行代码</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">100%</div>
+                    <div class="label">本地运行</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 搜索工具...">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <!-- 生活工具 -->
+        <div class="category">
+            <h2 class="category-title">📱 生活工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card" data-path="OllamaAssistant">
+                    <div class="tool-icon">🤖</div>
+                    <div class="tool-name">Ollama助手</div>
+                    <div class="tool-desc">本地AI对话助手，完全隐私保护，支持多种AI模型</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Ollama</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('OllamaAssistant', 'ollama_assistant.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('OllamaAssistant')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="06_SmartStudyAssistant">
+                    <div class="tool-icon">📚</div>
+                    <div class="tool-name">智能学习助手</div>
+                    <div class="tool-desc">番茄工作法、学习统计、任务管理，提升学习效率</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">SQLite</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('06_SmartStudyAssistant', 'app.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('06_SmartStudyAssistant')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="07_PersonalFinanceManager">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-name">个人财务管理器</div>
+                    <div class="tool-desc">收支追踪、预算管理、财务报告，理财好帮手</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Flask</span>
+                        <span class="tech-tag">SQLite</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('07_PersonalFinanceManager', 'app.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('07_PersonalFinanceManager')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="08_HealthTracker">
+                    <div class="tool-icon">🏃</div>
+                    <div class="tool-name">健康追踪器</div>
+                    <div class="tool-desc">运动、饮食、睡眠、饮水全方位健康管理</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Flask</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('08_HealthTracker', 'health_app.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('08_HealthTracker')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="09_CreativeWritingAssistant">
+                    <div class="tool-icon">✍️</div>
+                    <div class="tool-name">创意写作助手</div>
+                    <div class="tool-desc">故事提示、角色生成、写作工具，激发创作灵感</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('09_CreativeWritingAssistant', 'writing_assistant.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('09_CreativeWritingAssistant')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="10_PasswordManager">
+                    <div class="tool-icon">🔐</div>
+                    <div class="tool-name">密码管理器</div>
+                    <div class="tool-desc">强密码生成、安全存储、本地加密</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">加密</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('10_PasswordManager', 'password_manager.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('10_PasswordManager')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="11_FileOrganizer">
+                    <div class="tool-icon">📁</div>
+                    <div class="tool-name">文件整理助手</div>
+                    <div class="tool-desc">自动分类文件、批量处理、保持文件夹整洁</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">自动化</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('11_FileOrganizer', 'file_organizer.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('11_FileOrganizer')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="12_BookmarkManager">
+                    <div class="tool-icon">🔖</div>
+                    <div class="tool-name">书签管理器</div>
+                    <div class="tool-desc">书签管理、标签系统、智能搜索</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">JSON</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('12_BookmarkManager', 'bookmark_manager.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('12_BookmarkManager')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="13_TodoMaster">
+                    <div class="tool-icon">✅</div>
+                    <div class="tool-name">待办事项大师</div>
+                    <div class="tool-desc">任务管理、项目组织、优先级设置</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">JSON</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('13_TodoMaster', 'todo_master.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('13_TodoMaster')">打开文件夹</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 开发工具 -->
+        <div class="category">
+            <h2 class="category-title">💻 开发工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card" data-path="01_SmartCodeAssistant">
+                    <div class="tool-icon">💻</div>
+                    <div class="tool-name">智能代码助手</div>
+                    <div class="tool-desc">代码分析、文档生成、复杂度计算</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">AST</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('01_SmartCodeAssistant', 'code_analyzer.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('01_SmartCodeAssistant')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="02_SmartProjectGenerator">
+                    <div class="tool-icon">🏗️</div>
+                    <div class="tool-name">项目生成器</div>
+                    <div class="tool-desc">快速生成项目结构、多种模板</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">模板</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('02_SmartProjectGenerator', 'cli.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('02_SmartProjectGenerator')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="03_DevDashboard">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-name">开发仪表板</div>
+                    <div class="tool-desc">Git分析、工作时间追踪、效率统计</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">GitPython</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('03_DevDashboard', 'tracker.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('03_DevDashboard')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="04_APIDocGenerator">
+                    <div class="tool-icon">📝</div>
+                    <div class="tool-name">API文档生成器</div>
+                    <div class="tool-desc">自动生成API文档、多格式输出</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Flask</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('04_APIDocGenerator', 'doc_generator.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('04_APIDocGenerator')">打开文件夹</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI工具 -->
+        <div class="category">
+            <h2 class="category-title">🤖 AI增强工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card" data-path="AICodeReviewer">
+                    <div class="tool-icon">🔍</div>
+                    <div class="tool-name">AI代码审查</div>
+                    <div class="tool-desc">代码审查、优化建议、Bug检测</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Ollama</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('AICodeReviewer', 'ai_code_reviewer.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('AICodeReviewer')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="AIDocGenerator">
+                    <div class="tool-icon">📚</div>
+                    <div class="tool-name">AI文档生成</div>
+                    <div class="tool-desc">自动生成README、API文档</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Ollama</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('AIDocGenerator', 'ai_doc_generator.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('AIDocGenerator')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="AILearningAssistant">
+                    <div class="tool-icon">🎓</div>
+                    <div class="tool-name">AI学习助手</div>
+                    <div class="tool-desc">概念解释、问题解答、练习生成</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Ollama</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('AILearningAssistant', 'ai_learning_assistant.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('AILearningAssistant')">打开文件夹</button>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-path="AITranslator">
+                    <div class="tool-icon">🌍</div>
+                    <div class="tool-name">AI翻译助手</div>
+                    <div class="tool-desc">多语言翻译、上下文翻译、文本润色</div>
+                    <div class="tool-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Ollama</span>
+                        <span class="tech-tag">AI</span>
+                    </div>
+                    <div class="tool-actions">
+                        <button class="btn btn-primary" onclick="launchTool('AITranslator', 'ai_translator.py')">启动</button>
+                        <button class="btn btn-secondary" onclick="openFolder('AITranslator')">打开文件夹</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🌟 由 星星 ⭐ & 铁血士 🛡️⚔️ 共同开发</p>
+            <p>GitHub: <a href="https://github.com/xiaolinzhanshi/awesome-ai-tools-collection" style="color: white;">awesome-ai-tools-collection</a></p>
+            <p>所有工具100%本地运行，保护您的隐私 🔒</p>
+        </div>
+    </div>
+
+    <script>
+        const basePath = 'G:\\\\AI\\\\';
+
+        function launchTool(folder, file) {
+            const fullPath = basePath + folder + '\\\\' + file;
+            alert('正在启动工具...\n\n路径: ' + fullPath + '\n\n请在命令行中运行:\npython "' + fullPath + '"');
+            
+            // 尝试复制命令到剪贴板
+            const command = 'python "' + fullPath + '"';
+            navigator.clipboard.writeText(command).then(() => {
+                console.log('命令已复制到剪贴板');
+            });
+        }
+
+        function openFolder(folder) {
+            const fullPath = basePath + folder;
+            alert('打开文件夹...\n\n路径: ' + fullPath + '\n\n请在文件管理器中打开此路径');
+            
+            // 复制路径到剪贴板
+            navigator.clipboard.writeText(fullPath).then(() => {
+                console.log('路径已复制到剪贴板');
+            });
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.tool-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.tool-name').textContent.toLowerCase();
+                const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
