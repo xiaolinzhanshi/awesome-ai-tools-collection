@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 文档</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; font-size: 2.5em; margin-bottom: 10px; }
+        .meta { color: #666; }
+        .endpoint-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .method {
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .method-get { background: #10b981; }
+        .method-post { background: #3b82f6; }
+        .method-put { background: #f59e0b; }
+        .method-delete { background: #ef4444; }
+        .path {
+            font-family: monospace;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .badge-auth {
+            background: #8b5cf6;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .description { color: #666; margin-bottom: 15px; }
+        h4 { color: #333; margin: 15px 0 10px 0; }
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .params-table th, .params-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .params-table th { background: #f9fafb; font-weight: bold; }
+        pre {
+            background: #1f2937;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        code { font-family: 'Courier New', monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 API 文档</h1>
+            <p class="meta">生成时间: 2026-02-01 00:08:11 | 端点数量: 7</p>
+        </header>
+        
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="path">/api/users</span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">获取用户列表 返回所有用户的信息</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 page</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 limit</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+response = requests.get('http://api.example.com/api/users')
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="path">/api/users/<int:user_id></span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">获取单个用户信息 根据用户 ID 返回用户详细信息</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>user_id</code></td>
+                        <td>int</td>
+                        <td>path</td>
+                        <td>是</td>
+                        <td>路径参数 user_id</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+response = requests.get('http://api.example.com/api/users/<int:user_id>')
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="path">/api/users</span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">创建新用户 提交用户信息创建新用户</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>body</code></td>
+                        <td>object</td>
+                        <td>body</td>
+                        <td>是</td>
+                        <td>JSON 请求体</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+data = {}
+response = requests.post('http://api.example.com/api/users', json=data)
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-put">PUT</span>
+                    <span class="path">/api/users/<int:user_id></span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">更新用户信息 根据用户 ID 更新用户信息</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>user_id</code></td>
+                        <td>int</td>
+                        <td>path</td>
+                        <td>是</td>
+                        <td>路径参数 user_id</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>body</code></td>
+                        <td>object</td>
+                        <td>body</td>
+                        <td>是</td>
+                        <td>JSON 请求体</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+data = {}
+response = requests.put('http://api.example.com/api/users/<int:user_id>', json=data)
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-delete">DELETE</span>
+                    <span class="path">/api/users/<int:user_id></span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">删除用户 根据用户 ID 删除用户</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>user_id</code></td>
+                        <td>int</td>
+                        <td>path</td>
+                        <td>是</td>
+                        <td>路径参数 user_id</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 page</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 limit</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>keyword</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 keyword</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+response = requests.delete('http://api.example.com/api/users/<int:user_id>')
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="path">/api/posts</span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">获取文章列表 返回所有文章信息，支持分页和搜索</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 page</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 limit</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><code>keyword</code></td>
+                        <td>string</td>
+                        <td>query</td>
+                        <td>否</td>
+                        <td>查询参数 keyword</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+response = requests.get('http://api.example.com/api/posts')
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+            <div class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="path">/api/auth/login</span>
+                    
+                </div>
+                <div class="endpoint-body">
+                    <p class="description">用户登录 使用用户名和密码登录系统</p>
+            <h4>参数</h4><table class="params-table"><tr><th>名称</th><th>类型</th><th>位置</th><th>必填</th><th>说明</th></tr>
+                    <tr>
+                        <td><code>body</code></td>
+                        <td>object</td>
+                        <td>body</td>
+                        <td>是</td>
+                        <td>JSON 请求体</td>
+                    </tr>
+                    </table>
+                    <h4>示例代码</h4>
+                    <pre><code class="language-python">import requests
+
+data = {}
+response = requests.post('http://api.example.com/api/auth/login', json=data)
+print(response.json())</code></pre>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

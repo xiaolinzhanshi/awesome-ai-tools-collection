@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能学习助手 - Smart Study Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pomodoro-timer {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .timer-display {
+            font-size: 5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .subject-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .subject-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .subject-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .task-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            background: #e5e7eb;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s;
+        }
+
+        .notes-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        .notes-area:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            border-radius: 15px;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🎓 智能学习助手</h1>
+                <p>让学习变得更高效、更有趣</p>
+            </div>
+            <div>
+                <span id="currentTime"></span>
+            </div>
+        </header>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="todayStudyTime">0</div>
+                <div class="stat-label">今日学习（分钟）</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="studyStreak">0</div>
+                <div class="stat-label">连续学习（天）</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">完成任务</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="achievements">0</div>
+                <div class="stat-label">获得成就</div>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content">
+            <!-- 番茄钟 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span>🍅</span>
+                    <span>番茄钟学习</span>
+                </h2>
+
+                <div class="subject-selector">
+                    <button class="subject-btn active" data-subject="数学">📐 数学</button>
+                    <button class="subject-btn" data-subject="英语">📖 英语</button>
+                    <button class="subject-btn" data-subject="物理">⚛️ 物理</button>
+                    <button class="subject-btn" data-subject="化学">🧪 化学</button>
+                    <button class="subject-btn" data-subject="编程">💻 编程</button>
+                    <button class="subject-btn" data-subject="其他">📝 其他</button>
+                </div>
+
+                <div class="pomodoro-timer">
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button class="btn btn-primary" id="startBtn">开始学习</button>
+                        <button class="btn btn-secondary" id="pauseBtn">暂停</button>
+                        <button class="btn btn-secondary" id="resetBtn">重置</button>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <label>
+                            <input type="checkbox" id="autoBreak"> 自动休息
+                        </label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h3>学习笔记</h3>
+                    <textarea class="notes-area" id="sessionNotes" placeholder="记录本次学习的重点内容..."></textarea>
+                    <button class="btn btn-primary" style="margin-top: 10px;" id="saveNotesBtn">保存笔记</button>
+                </div>
+            </div>
+
+            <!-- 任务列表 -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span>📋</span>
+                    <span>今日任务</span>
+                </h2>
+
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 20px;" id="addTaskBtn">
+                    ➕ 添加任务
+                </button>
+
+                <div class="task-list" id="taskList">
+                    <!-- 任务项将动态添加 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习统计 -->
+        <div class="section" style="margin-top: 30px;">
+            <h2 class="section-title">
+                <span>📊</span>
+                <span>学习统计</span>
+            </h2>
+
+            <div class="chart-container">
+                <canvas id="studyChart"></canvas>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3>本周学习分布</h3>
+                <div id="subjectDistribution"></div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3>获得成就</h3>
+                <div id="achievementsList">
+                    <span class="achievement-badge">🎯 首次学习</span>
+                    <span class="achievement-badge">⏰ 早起学习</span>
+                    <span class="achievement-badge">🔥 连续7天</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let timerInterval = null;
+        let timeLeft = 25 * 60; // 25分钟
+        let isRunning = false;
+        let currentSubject = '数学';
+        let currentSessionId = null;
+
+        // 更新时间显示
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('zh-CN', { hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 科目选择
+        document.querySelectorAll('.subject-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSubject = btn.dataset.subject;
+            });
+        });
+
+        // 番茄钟功能
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const progress = ((25 * 60 - timeLeft) / (25 * 60)) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('startBtn').textContent = '学习中...';
+                
+                // 开始学习会话
+                const response = await fetch('/api/study/start', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({subject: currentSubject})
+                });
+                const data = await response.json();
+                currentSessionId = data.session_id;
+                
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        document.getElementById('startBtn').textContent = '开始学习';
+                        alert('🎉 番茄钟完成！休息一下吧！');
+                        
+                        // 结束学习会话
+                        endStudySession();
+                        
+                        // 自动休息
+                        if (document.getElementById('autoBreak').checked) {
+                            timeLeft = 5 * 60; // 5分钟休息
+                            updateTimerDisplay();
+                        } else {
+                            timeLeft = 25 * 60;
+                            updateTimerDisplay();
+                        }
+                    }
+                }, 1000);
+            }
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                document.getElementById('startBtn').textContent = '继续';
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+            document.getElementById('startBtn').textContent = '开始学习';
+        });
+
+        async function endStudySession() {
+            if (currentSessionId) {
+                const notes = document.getElementById('sessionNotes').value;
+                await fetch(`/api/study/end/${currentSessionId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({notes: notes})
+                });
+                
+                // 更新统计
+                loadStats();
+            }
+        }
+
+        // 保存笔记
+        document.getElementById('saveNotesBtn').addEventListener('click', async () => {
+            const notes = document.getElementById('sessionNotes').value;
+            if (notes.trim()) {
+                await fetch('/api/notes', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        title: `${currentSubject} - ${new Date().toLocaleDateString()}`,
+                        content: notes,
+                        subject: currentSubject
+                    })
+                });
+                alert('✅ 笔记已保存！');
+                document.getElementById('sessionNotes').value = '';
+            }
+        });
+
+        // 加载统计数据
+        async function loadStats() {
+            const response = await fetch('/api/study/stats?days=7');
+            const data = await response.json();
+            
+            // 更新今日学习时长
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = data.daily_stats.find(d => d.date === today);
+            document.getElementById('todayStudyTime').textContent = 
+                todayData ? todayData.duration : 0;
+        }
+
+        // 加载任务
+        async function loadTasks() {
+            const response = await fetch('/api/tasks');
+            const data = await response.json();
+            
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            let completedCount = 0;
+            
+            data.tasks.forEach(task => {
+                if (task.completed) completedCount++;
+                
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item' + (task.completed ? ' completed' : '');
+                taskItem.innerHTML = `
+                    <div>
+                        <input type="checkbox" class="task-checkbox" 
+                               ${task.completed ? 'checked' : ''}
+                               onchange="toggleTask(${task.id})">
+                        <span>${task.title}</span>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.9em;">${task.subject || ''}</span>
+                    </div>
+                `;
+                taskList.appendChild(taskItem);
+            });
+            
+            document.getElementById('completedTasks').textContent = completedCount;
+        }
+
+        async function toggleTask(taskId) {
+            await fetch(`/api/tasks/${taskId}/complete`, {method: 'POST'});
+            loadTasks();
+        }
+
+        // 添加任务
+        document.getElementById('addTaskBtn').addEventListener('click', () => {
+            const title = prompt('请输入任务名称:');
+            if (title) {
+                fetch('/api/tasks', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        title: title,
+                        subject: currentSubject
+                    })
+                }).then(() => loadTasks());
+            }
+        });
+
+        // 初始化
+        updateTimerDisplay();
+        loadStats();
+        loadTasks();
+    </script>
+</body>
+</html>

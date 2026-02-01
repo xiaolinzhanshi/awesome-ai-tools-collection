@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能项目生成器 - Smart Project Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .templates-section, .config-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .template-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .template-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
+        }
+
+        .template-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .template-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .template-desc {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .template-features {
+            margin-top: 10px;
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-section {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .file-tree {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .file-tree-item {
+            padding: 5px 0;
+            color: #333;
+        }
+
+        .file-tree-item.directory {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .file-tree-item.file {
+            color: #666;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⭐ 智能项目生成器 ⭐</h1>
+            <p class="subtitle">让项目创建变得简单而优雅！</p>
+            <p class="subtitle">星星 & Moltbot 联合开发</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 模板选择区 -->
+            <div class="templates-section">
+                <h2 class="section-title">
+                    <span>📋</span>
+                    <span>选择项目模板</span>
+                </h2>
+                
+                <div class="template-grid" id="templateGrid">
+                    <div class="template-card" data-template="python-package">
+                        <div class="template-icon">🐍</div>
+                        <div class="template-name">Python 包</div>
+                        <div class="template-desc">标准的 Python 包项目结构</div>
+                        <div class="template-features">✓ setup.py ✓ 测试框架 ✓ 文档</div>
+                    </div>
+
+                    <div class="template-card" data-template="flask-web">
+                        <div class="template-icon">🌐</div>
+                        <div class="template-name">Flask Web 应用</div>
+                        <div class="template-desc">完整的 Flask Web 应用框架</div>
+                        <div class="template-features">✓ 蓝图 ✓ 模板 ✓ 静态文件</div>
+                    </div>
+
+                    <div class="template-card" data-template="electron-app">
+                        <div class="template-icon">⚡</div>
+                        <div class="template-name">Electron 桌面应用</div>
+                        <div class="template-desc">跨平台桌面应用程序</div>
+                        <div class="template-features">✓ 主进程 ✓ 渲染进程 ✓ 打包配置</div>
+                    </div>
+
+                    <div class="template-card" data-template="react-app">
+                        <div class="template-icon">⚛️</div>
+                        <div class="template-name">React 应用</div>
+                        <div class="template-desc">现代化的 React 前端项目</div>
+                        <div class="template-features">✓ TypeScript ✓ Vite ✓ Router</div>
+                    </div>
+
+                    <div class="template-card" data-template="data-science">
+                        <div class="template-icon">📊</div>
+                        <div class="template-name">数据科学项目</div>
+                        <div class="template-desc">数据分析和机器学习项目</div>
+                        <div class="template-features">✓ Jupyter ✓ Pandas ✓ 可视化</div>
+                    </div>
+
+                    <div class="template-card" data-template="chrome-extension">
+                        <div class="template-icon">🔌</div>
+                        <div class="template-name">Chrome 扩展</div>
+                        <div class="template-desc">浏览器扩展程序</div>
+                        <div class="template-features">✓ Manifest V3 ✓ 弹窗 ✓ 内容脚本</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 配置区 -->
+            <div class="config-section">
+                <h2 class="section-title">
+                    <span>⚙️</span>
+                    <span>项目配置</span>
+                </h2>
+
+                <div class="form-group">
+                    <label for="projectName">项目名称 *</label>
+                    <input type="text" id="projectName" placeholder="my-awesome-project" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectDesc">项目描述</label>
+                    <input type="text" id="projectDesc" placeholder="一个很棒的项目">
+                </div>
+
+                <div class="form-group">
+                    <label for="author">作者</label>
+                    <input type="text" id="author" value="星星 & Moltbot">
+                </div>
+
+                <div class="form-group">
+                    <label for="outputDir">输出目录</label>
+                    <input type="text" id="outputDir" value="G:\AI\GeneratedProjects">
+                </div>
+
+                <button class="btn" id="generateBtn" disabled>
+                    🚀 生成项目
+                </button>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="templateCount">6</div>
+                        <div class="stat-label">可用模板</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="projectCount">0</div>
+                        <div class="stat-label">已生成项目</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">⚡</div>
+                        <div class="stat-label">快速生成</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预览区 -->
+        <div class="preview-section" id="previewSection">
+            <h2 class="section-title">
+                <span>👁️</span>
+                <span>项目结构预览</span>
+            </h2>
+            <div class="file-tree" id="fileTree"></div>
+            
+            <div class="success-message" id="successMessage">
+                <h3>✅ 项目生成成功！</h3>
+                <p id="successDetails"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTemplate = null;
+        let projectCount = 0;
+
+        // 模板选择
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // 移除其他选中状态
+                document.querySelectorAll('.template-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                
+                // 选中当前模板
+                card.classList.add('selected');
+                selectedTemplate = card.dataset.template;
+                
+                // 启用生成按钮
+                document.getElementById('generateBtn').disabled = false;
+                
+                // 显示预览
+                showPreview(selectedTemplate);
+            });
+        });
+
+        // 显示预览
+        function showPreview(template) {
+            const previewSection = document.getElementById('previewSection');
+            const fileTree = document.getElementById('fileTree');
+            
+            const structures = {
+                'python-package': `
+my-package/
+├── src/
+│   └── my_package/
+│       ├── __init__.py
+│       └── main.py
+├── tests/
+│   └── test_main.py
+├── docs/
+├── setup.py
+├── requirements.txt
+├── README.md
+└── .gitignore`,
+                'flask-web': `
+my-flask-app/
+├── app/
+│   ├── __init__.py
+│   ├── routes/
+│   │   └── main.py
+│   ├── templates/
+│   │   ├── base.html
+│   │   └── index.html
+│   └── static/
+│       ├── css/
+│       │   └── style.css
+│       └── js/
+│           └── main.js
+├── tests/
+├── run.py
+├── requirements.txt
+└── README.md`,
+                'electron-app': `
+my-electron-app/
+├── src/
+│   ├── index.html
+│   ├── style.css
+│   └── renderer.js
+├── assets/
+├── main.js
+├── package.json
+└── README.md`,
+                'react-app': `
+my-react-app/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── App.tsx
+│   └── main.tsx
+├── public/
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md`,
+                'data-science': `
+my-data-project/
+├── notebooks/
+│   └── analysis.ipynb
+├── data/
+│   ├── raw/
+│   └── processed/
+├── src/
+│   ├── data_processing.py
+│   └── visualization.py
+├── requirements.txt
+└── README.md`,
+                'chrome-extension': `
+my-extension/
+├── manifest.json
+├── popup/
+│   ├── popup.html
+│   ├── popup.css
+│   └── popup.js
+├── content/
+│   └── content.js
+├── background/
+│   └── background.js
+├── icons/
+└── README.md`
+            };
+            
+            fileTree.innerHTML = `<pre>${structures[template] || '选择模板查看结构'}</pre>`;
+            previewSection.classList.add('active');
+        }
+
+        // 生成项目
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const projectName = document.getElementById('projectName').value.trim();
+            const projectDesc = document.getElementById('projectDesc').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const outputDir = document.getElementById('outputDir').value.trim();
+            
+            if (!projectName) {
+                alert('请输入项目名称！');
+                return;
+            }
+            
+            if (!selectedTemplate) {
+                alert('请选择项目模板！');
+                return;
+            }
+            
+            // 模拟生成过程
+            const btn = document.getElementById('generateBtn');
+            btn.textContent = '⏳ 正在生成...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                projectCount++;
+                document.getElementById('projectCount').textContent = projectCount;
+                
+                const successMessage = document.getElementById('successMessage');
+                const successDetails = document.getElementById('successDetails');
+                
+                successDetails.innerHTML = `
+                    <strong>项目名称:</strong> ${projectName}<br>
+                    <strong>模板:</strong> ${selectedTemplate}<br>
+                    <strong>输出目录:</strong> ${outputDir}\\${projectName}<br>
+                    <br>
+                    <strong>下一步:</strong><br>
+                    1. 打开项目目录<br>
+                    2. 安装依赖<br>
+                    3. 开始开发！
+                `;
+                
+                successMessage.classList.add('active');
+                
+                btn.textContent = '✅ 生成成功！再生成一个？';
+                btn.disabled = false;
+                
+                // 重置表单
+                setTimeout(() => {
+                    btn.textContent = '🚀 生成项目';
+                    successMessage.classList.remove('active');
+                }, 3000);
+            }, 1500);
+        });
+
+        // 自动填充项目名称
+        document.getElementById('projectName').addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            if (value && selectedTemplate) {
+                document.getElementById('generateBtn').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
